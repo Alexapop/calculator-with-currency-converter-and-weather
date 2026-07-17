@@ -38,7 +38,9 @@ The app must use the following API:
 - https://www.el-tiempo.net/api
 
 It must display an image based on the weather state (StateSky).
-The user should be able to choose between national information or a specific province, such as Asturias.
+The user should be able to choose between national weather information and information for a specific province, such as Asturias.
+
+> All elements should be available in a single view.
 
 ## Development requirements
 
@@ -62,11 +64,13 @@ Testing tools:
 
 Optional UI libraries:
 - Bootstrap
-- Vuetify
-- Other CSS libraries
+- SCSS
 
-> All elements should be available in a single view.
+## Design
+Mockups were created using Google Stitch and AI Studio.
+
+[View Mockups](https://versahub.ai.studio/)
 
 ## Deliverables
 
-- Link to GitHub Pages
+- GitHub Pages link

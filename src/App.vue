@@ -1,16 +1,14 @@
 <script setup>
-
+import AppHeader from "@/components/header/AppHeader.vue";
 </script>
 
 <template>
-  <header>
-    VersaHub
-  </header>
+  <AppHeader />
+  
 
   <main>
    
   </main>
 </template>
- <style scoped lang="scss"></style>
 
 

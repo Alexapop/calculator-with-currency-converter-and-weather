@@ -1,5 +1,6 @@
 <script setup>
 import AppHeader from "@/components/header/AppHeader.vue";
+import AppFooter from "./components/footer/AppFooter.vue";
 </script>
 
 <template>
@@ -9,6 +10,7 @@ import AppHeader from "@/components/header/AppHeader.vue";
   <main>
    
   </main>
+  <AppFooter/>
 </template>
 
 

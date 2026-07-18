@@ -3,6 +3,8 @@ import AppHeader from "@/components/header/AppHeader.vue";
 import AppFooter from "./components/footer/AppFooter.vue";
 import AppCalculator from "./components/calculator/AppCalculator.vue";
 import CurrencyConvertor from "./components/currency/CurrencyConvertor.vue";
+import AppStateSky from "@/components/state-sky/AppStateSky.vue";
+import AppForecast from "@/components/forecast/AppForecast.vue";
 </script>
 
 <template>
@@ -18,6 +20,12 @@ import CurrencyConvertor from "./components/currency/CurrencyConvertor.vue";
         </div>
         <div class="col-12 widget-column">
           <CurrencyConvertor />
+        </div>
+        <div class="col-12 state-sky-column">
+          <AppStateSky />
+        </div>
+        <div class="col-12 forecast-column">
+          <AppForecast />
         </div>
       </div>
     </main>
@@ -39,6 +47,16 @@ import CurrencyConvertor from "./components/currency/CurrencyConvertor.vue";
   .widget-column {
     flex: 0 0 auto;
     width: 45%;
+  }
+
+  .state-sky-column {
+    flex: 0 0 auto;
+    width: 37.5%;
+  }
+
+  .forecast-column {
+    flex: 0 0 auto;
+    width: 52.5%;
   }
 }
 </style>

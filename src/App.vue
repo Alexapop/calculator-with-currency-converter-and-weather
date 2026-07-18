@@ -2,6 +2,7 @@
 import AppHeader from "@/components/header/AppHeader.vue";
 import AppFooter from "./components/footer/AppFooter.vue";
 import AppCalculator from "./components/calculator/AppCalculator.vue";
+import CurrencyConvertor from "./components/currency/CurrencyConvertor.vue";
 </script>
 
 <template>
@@ -12,6 +13,9 @@ import AppCalculator from "./components/calculator/AppCalculator.vue";
       <div class="row g-4">
         <div class="col-12 col-md-6 col-xl-4">
           <AppCalculator />
+        </div>
+        <div class="col-12 col-md-6 col-xl-4">
+          <CurrencyConvertor />
         </div>
       </div>
     </main>

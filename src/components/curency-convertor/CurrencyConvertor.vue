@@ -1,5 +1,49 @@
+<script setup>
+import { ref, onMounted } from "vue";
+import { getExchangeRates } from "../../services/currencyService.js";
+
+const apiRates = ref({});
+const amount = ref(0);
+const total = ref(0);
+const currencyOrigin = ref("USD");
+const currencyToBeConverted = ref("EUR");
+
+function getData() {
+  getExchangeRates()
+    .then((response) => {
+      apiRates.value = response.data.rates;
+      convertCurrency();
+    })
+    .catch((error) => {
+      console.log("Error", error);
+    });
+}
+
+onMounted(() => {
+  getData();
+});
+
+function convertCurrency() {
+  const originRate = Number(apiRates.value[currencyOrigin.value]);
+  const destinationRate = Number(
+    apiRates.value[currencyToBeConverted.value],
+  );
+
+  if (!originRate || !destinationRate) {
+    total.value = null;
+    return;
+  }
+
+  total.value = (amount.value / originRate) * destinationRate;
+}
+</script>
+
 <template>
-  <section id="currency-widget" class="currency" aria-labelledby="currency-title">
+  <section
+    id="currency-widget"
+    class="currency"
+    aria-labelledby="currency-title"
+  >
     <header class="currency__header">
       <h2 id="currency-title" class="currency__title">
         <span class="currency__icon" aria-hidden="true">$</span>
@@ -10,18 +54,29 @@
     <div class="currency__field">
       <label class="currency__label" for="currency-amount">Amount</label>
       <div class="currency__amount">
-        <input id="currency-amount" type="number" placeholder="Enter amount"/>
-        <span>USD</span>
+        <input
+          id="currency-amount"
+          v-model.number="amount"
+          type="number"
+          placeholder="Enter amount"
+          @input="convertCurrency"
+        />
+        <span>{{ currencyOrigin }}</span>
       </div>
     </div>
 
     <div class="currency__field">
       <label class="currency__label" for="currency-from">From</label>
       <div class="currency__selector">
-        <select id="currency-from" name="currency-from">
-          <option value="EUR">Euro (€)</option>
-          <option value="USD" selected>Dólar ($)</option>
-          <option value="JPY">Yen (¥)</option>
+        <select
+          id="currency-from"
+          v-model="currencyOrigin"
+          name="currency-from"
+          @change="convertCurrency"
+        >
+          <option value="EUR">EUR (€)</option>
+          <option value="USD">USD ($)</option>
+          <option value="JPY">JPY (¥)</option>
         </select>
         <span class="currency__chevron" aria-hidden="true">⌄</span>
       </div>
@@ -30,8 +85,13 @@
     <div class="currency__field">
       <label class="currency__label" for="currency-to">To</label>
       <div class="currency__selector">
-        <select id="currency-to" name="currency-to">
-          <option value="EUR" selected>Euro (€)</option>
+        <select
+          id="currency-to"
+          v-model="currencyToBeConverted"
+          name="currency-to"
+          @change="convertCurrency"
+        >
+          <option value="EUR">Euro (€)</option>
           <option value="USD">Dólar ($)</option>
           <option value="JPY">Yen (¥)</option>
         </select>
@@ -41,8 +101,7 @@
 
     <div class="currency__result">
       <span class="currency__result-label">Exchange Result</span>
-      <output></output>
-      <small>1 USD = 0.9125 EUR • Updated just now</small>
+      <output>{{ total }}</output>
     </div>
   </section>
 </template>
@@ -57,7 +116,9 @@
   border-radius: var(--radius-lg);
   background-color: var(--color-brand-surface);
   box-shadow: 0 0.125rem 0.25rem rgb(30 27 75 / 6%);
-  transition: border-color 300ms ease, box-shadow 300ms ease;
+  transition:
+    border-color 300ms ease,
+    box-shadow 300ms ease;
 
   &:hover {
     border-color: var(--color-brand-primary);
@@ -155,7 +216,9 @@
     border: 1px solid var(--color-brand-surface-high);
     border-radius: var(--radius-md);
     background-color: var(--color-brand-surface);
-    transition: border-color 150ms ease, background-color 150ms ease;
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease;
 
     &:hover {
       border-color: var(--color-brand-primary);

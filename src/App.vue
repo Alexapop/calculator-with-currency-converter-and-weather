@@ -2,7 +2,7 @@
 import AppHeader from "@/components/header/AppHeader.vue";
 import AppFooter from "./components/footer/AppFooter.vue";
 import AppCalculator from "./components/calculator/AppCalculator.vue";
-import CurrencyConvertor from "./components/currency/CurrencyConvertor.vue";
+import CurrencyConvertor from "./components/curency-convertor/CurrencyConvertor.vue";
 import AppStateSky from "@/components/state-sky/AppStateSky.vue";
 import AppForecast from "@/components/forecast/AppForecast.vue";
 </script>

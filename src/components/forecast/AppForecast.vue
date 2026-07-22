@@ -5,28 +5,8 @@ import { getAsturiasForecast } from "../../services/weatherService.js";
 const emit = defineEmits(["select-weather"]);
 
 const forecasts = ref([]);
-const selectedForecastId = ref("");
+const selectedForecastId = ref("33024");
 const errorMessage = ref("");
-
-const weatherIcons = {
-  tormenta: "⛈️",
-  lluvia: "🌧️",
-  chubasco: "🌧️",
-  nieve: "❄️",
-  despejado: "☀️",
-};
-
-function getWeatherIcon(condition) {
-  const text = condition.toLowerCase();
-
-  for (const word in weatherIcons) {
-    if (text.includes(word)) {
-      return weatherIcons[word];
-    }
-  }
-
-  return "☁️";
-}
 
 function selectForecast(forecast) {
   selectedForecastId.value = forecast.id;
@@ -37,9 +17,11 @@ async function loadForecasts() {
   try {
     forecasts.value = await getAsturiasForecast();
 
-    if (forecasts.value.length) {
-      selectForecast(forecasts.value[0]);
-    }
+    const initialForecast = forecasts.value.find(
+      (forecast) => forecast.id === selectedForecastId.value,
+    );
+
+    selectForecast(initialForecast ?? forecasts.value[0]);
   } catch (error) {
     console.error("Weather error:", error);
     errorMessage.value = "Could not load weather information.";
@@ -75,7 +57,7 @@ onMounted(loadForecasts);
         @click="selectForecast(forecast)"
       >
         <span class="forecast__icon" aria-hidden="true">
-          {{ getWeatherIcon(forecast.condition) }}
+          {{ forecast.icon }}
         </span>
 
         <span class="forecast__details">

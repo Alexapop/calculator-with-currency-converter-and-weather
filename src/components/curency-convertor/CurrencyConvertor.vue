@@ -10,8 +10,8 @@ const currencyToBeConverted = ref("EUR");
 
 function getData() {
   getExchangeRates()
-    .then((response) => {
-      apiRates.value = response.data.rates;
+    .then((rates) => {
+      apiRates.value = rates;
       convertCurrency();
     })
     .catch((error) => {
@@ -24,10 +24,8 @@ onMounted(() => {
 });
 
 function convertCurrency() {
-  const originRate = Number(apiRates.value[currencyOrigin.value]);
-  const destinationRate = Number(
-    apiRates.value[currencyToBeConverted.value],
-  );
+  const originRate = apiRates.value[currencyOrigin.value];
+  const destinationRate = apiRates.value[currencyToBeConverted.value];
 
   if (!originRate || !destinationRate) {
     total.value = null;

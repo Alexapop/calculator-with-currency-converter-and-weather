@@ -1,3 +1,54 @@
+<script setup>
+import { onMounted, ref } from "vue";
+import { getAsturiasForecast } from "../../services/weatherService.js";
+
+const emit = defineEmits(["select-weather"]);
+
+const forecasts = ref([]);
+const selectedForecastId = ref("");
+const errorMessage = ref("");
+
+const weatherIcons = {
+  tormenta: "⛈️",
+  lluvia: "🌧️",
+  chubasco: "🌧️",
+  nieve: "❄️",
+  despejado: "☀️",
+};
+
+function getWeatherIcon(condition) {
+  const text = condition.toLowerCase();
+
+  for (const word in weatherIcons) {
+    if (text.includes(word)) {
+      return weatherIcons[word];
+    }
+  }
+
+  return "☁️";
+}
+
+function selectForecast(forecast) {
+  selectedForecastId.value = forecast.id;
+  emit("select-weather", forecast);
+}
+
+async function loadForecasts() {
+  try {
+    forecasts.value = await getAsturiasForecast();
+
+    if (forecasts.value.length) {
+      selectForecast(forecasts.value[0]);
+    }
+  } catch (error) {
+    console.error("Weather error:", error);
+    errorMessage.value = "Could not load weather information.";
+  }
+}
+
+onMounted(loadForecasts);
+</script>
+
 <template>
   <section class="forecast" aria-labelledby="forecast-title">
     <header class="forecast__header">
@@ -7,33 +58,40 @@
 
     <h3>Asturias Forecast</h3>
 
-    <div class="forecast__list">
-      <div class="forecast__city">
-        <span class="forecast__icon" aria-hidden="true">☁</span>
-        <span class="forecast__details"><strong>Oviedo</strong><small>Cloudy</small></span>
-        <strong class="forecast__temperature">21°C</strong>
-      </div>
+    <p v-if="errorMessage">
+      {{ errorMessage }}
+    </p>
 
-      <div class="forecast__city">
-        <span class="forecast__icon" aria-hidden="true">☂</span>
-        <span class="forecast__details"><strong>Avilés</strong><small>Light Rain</small></span>
-        <strong class="forecast__temperature">21°C</strong>
-      </div>
+    <div v-else class="forecast__list">
+      <button
+        v-for="forecast in forecasts"
+        :key="forecast.id"
+        type="button"
+        class="forecast__city"
+        :class="{
+          'forecast__city--selected': forecast.id === selectedForecastId,
+        }"
+        :aria-pressed="forecast.id === selectedForecastId"
+        @click="selectForecast(forecast)"
+      >
+        <span class="forecast__icon" aria-hidden="true">
+          {{ getWeatherIcon(forecast.condition) }}
+        </span>
 
-      <div class="forecast__city forecast__city--selected">
-        <span class="forecast__icon forecast__icon--sun" aria-hidden="true">☀</span>
-        <span class="forecast__details"><strong>Llanes</strong><small>Windy</small></span>
-        <strong class="forecast__temperature">20°C</strong>
-      </div>
+        <span class="forecast__details">
+          <strong>{{ forecast.city }}</strong>
+          <small>{{ forecast.condition }}</small>
+        </span>
 
-      <div class="forecast__city">
-        <span class="forecast__icon forecast__icon--sun" aria-hidden="true">☀</span>
-        <span class="forecast__details"><strong>Mieres</strong><small>Sunny</small></span>
-        <strong class="forecast__temperature">23°C</strong>
-      </div>
+        <strong class="forecast__temperature">
+          {{ forecast.temperature }}°C
+        </strong>
+      </button>
     </div>
 
-    <p class="forecast__note">Regional weather overview for selected cities in Asturias.</p>
+    <p class="forecast__note">
+      Regional weather overview for selected cities in Asturias.
+    </p>
   </section>
 </template>
 
@@ -91,12 +149,16 @@
 
   &__city {
     display: flex;
+    width: 100%;
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem;
     border: 1px solid var(--color-brand-surface-high);
     border-radius: var(--radius-md);
     background-color: var(--color-brand-surface);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
 
     &--selected {
       border-color: var(--color-brand-primary);
@@ -116,10 +178,6 @@
     color: var(--color-brand-primary);
     background-color: var(--color-brand-surface-low);
     font-size: 1rem;
-
-    &--sun {
-      color: var(--color-brand-pink);
-    }
   }
 
   &__details {

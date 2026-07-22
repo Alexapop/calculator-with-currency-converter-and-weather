@@ -1,10 +1,17 @@
 <script setup>
+import { ref } from "vue";
 import AppHeader from "@/components/header/AppHeader.vue";
 import AppFooter from "./components/footer/AppFooter.vue";
 import AppCalculator from "./components/calculator/AppCalculator.vue";
 import CurrencyConvertor from "./components/curency-convertor/CurrencyConvertor.vue";
 import AppStateSky from "@/components/state-sky/AppStateSky.vue";
 import AppForecast from "@/components/forecast/AppForecast.vue";
+
+const selectedWeather = ref(null);
+
+function updateSelectedWeather(weather) {
+  selectedWeather.value = weather;
+}
 </script>
 
 <template>
@@ -22,10 +29,10 @@ import AppForecast from "@/components/forecast/AppForecast.vue";
           <CurrencyConvertor />
         </div>
         <div class="col-12 state-sky-column">
-          <AppStateSky />
+          <AppStateSky :weather="selectedWeather" />
         </div>
         <div class="col-12 forecast-column">
-          <AppForecast />
+          <AppForecast @select-weather="updateSelectedWeather" />
         </div>
       </div>
     </main>

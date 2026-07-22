@@ -1,17 +1,44 @@
+<script setup>
+defineProps({
+  weather: {
+    type: Object,
+    default: null,
+  },
+});
+</script>
+
 <template>
-  <section id="weather-widget" class="state-sky" aria-labelledby="state-sky-title">
-    <span class="state-sky__sun" aria-hidden="true"></span>
+  <section
+    id="weather-widget"
+    class="state-sky"
+    aria-labelledby="state-sky-title"
+  >
+    <template v-if="weather">
+      <span
+        class="state-sky__icon"
+        role="img"
+        :aria-label="weather.condition"
+      >
+        {{ weather.icon }}
+      </span>
 
-    <div class="state-sky__location">
-      <span aria-hidden="true">●</span>
-      <h2 id="state-sky-title">Llanes<small>, Spain</small></h2>
-    </div>
+      <div class="state-sky__location">
+        <span aria-hidden="true">●</span>
+        <h2 id="state-sky-title">
+          {{ weather.city }}<small>, Spain</small>
+        </h2>
+      </div>
 
-    <p class="state-sky__condition">Windy</p>
+      <p class="state-sky__condition">
+        {{ weather.condition }}
+      </p>
 
-    <p class="state-sky__temperature">
-      20<span>°C</span>
-    </p>
+      <p class="state-sky__temperature">
+        {{ weather.temperature }}<span>°C</span>
+      </p>
+    </template>
+
+    <p v-else>Loading weather...</p>
   </section>
 </template>
 
@@ -44,22 +71,19 @@
     content: "";
   }
 
-  &__sun {
+  &__icon {
     position: absolute;
     top: 1rem;
     right: 1rem;
+    display: inline-flex;
     width: 3rem;
     height: 3rem;
+    align-items: center;
+    justify-content: center;
     border: 1px solid rgb(255 255 255 / 25%);
     border-radius: 50%;
-
-    &::before {
-      position: absolute;
-      inset: 0.5rem;
-      border-radius: 50%;
-      background-color: rgb(255 255 255 / 20%);
-      content: "";
-    }
+    background-color: rgb(255 255 255 / 12%);
+    font-size: 1.5rem;
   }
 
   &__location {
